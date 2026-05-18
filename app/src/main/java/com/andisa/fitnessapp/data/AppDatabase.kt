@@ -4,17 +4,29 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.andisa.fitnessapp.data.dao.CategoryDao
 import com.andisa.fitnessapp.data.dao.UserDao
+import com.andisa.fitnessapp.data.dao.WorkoutDao
+import com.andisa.fitnessapp.data.entity.Category
 import com.andisa.fitnessapp.data.entity.User
+import com.andisa.fitnessapp.data.entity.Workout
 
 @Database(
-    entities = [User::class],
-    version = 1,
+    entities = [
+        User::class,
+        Category::class,
+        Workout::class
+    ],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+
+    abstract fun categoryDao(): CategoryDao
+
+    abstract fun workoutDao(): WorkoutDao
 
     companion object {
 
@@ -29,7 +41,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "sportsync_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
 
                 INSTANCE = instance
                 instance
